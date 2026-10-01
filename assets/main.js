@@ -784,3 +784,41 @@
 
 /* === licznik otwarć demo (buy-signal) v3 — geo po stronie serwera === */
 (function(){try{if(String(location.protocol).indexOf('http')!==0)return;try{if(/[?&#]team=1/.test(location.search+location.hash)){localStorage.setItem('nb_team','1');}}catch(e){}try{if(localStorage.getItem('nb_team')==='1')return;}catch(e){}if(/crm-newbeginning|crm\.impulseo\.pl/.test(document.referrer||''))return;try{if(navigator.webdriver)return;}catch(e){}try{if(/^https?:\/\/(kris20032|impulseo-pl)\.github\.io\/?$/i.test(document.referrer||''))return;}catch(e){}if(sessionStorage.getItem('_dv'))return;sessionStorage.setItem('_dv','1');var seg=(location.pathname.split('/').filter(Boolean)[0])||'';var base=location.origin+(seg?('/'+seg):'');var ua='';try{ua=(navigator.userAgent||'').slice(0,300);}catch(e){}var EP='https://zngfubfinbojfgaxdrbf.supabase.co/functions/v1/demo-view';try{fetch(EP,{method:'POST',keepalive:true,headers:{'Content-Type':'text/plain'},body:JSON.stringify({demo_url:base,page:location.pathname,referrer:(document.referrer||null),user_agent:(ua||null)})}).catch(function(){});}catch(e){}}catch(e){}})();
+
+/* === KLINER: filtr galerii (Wszystko / Stolarka / Wnętrza) === */
+(function () {
+  try {
+    var btns = [].slice.call(document.querySelectorAll('.filtr[data-filtr]'));
+    if (!btns.length) return;
+    var tiles = [].slice.call(document.querySelectorAll('.gal-full .tile[data-kat]'));
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var f = b.getAttribute('data-filtr');
+        btns.forEach(function (x) {
+          var on = x === b;
+          x.classList.toggle('is-on', on);
+          x.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        tiles.forEach(function (t) {
+          var show = f === '*' || t.getAttribute('data-kat') === f;
+          t.hidden = !show;
+          if (show) t.classList.add('in');   // pokazany kafel nie czeka na obserwator przewijania
+        });
+        window.dispatchEvent(new Event('scroll'));
+      });
+    });
+  } catch (e) { /* bez filtra galeria dalej pokazuje wszystko */ }
+})();
+
+/* === KLINER: stopklatka rysuje przyszpilone tło tylko w pobliżu swojej sekcji === */
+(function () {
+  try {
+    var sek = [].slice.call(document.querySelectorAll('.stopklatka'));
+    if (!sek.length || !('IntersectionObserver' in window)) return;
+    document.documentElement.classList.add('stk-io');
+    var io = new IntersectionObserver(function (wpisy) {
+      wpisy.forEach(function (w) { w.target.classList.toggle('stk-on', w.isIntersecting); });
+    }, { rootMargin: '60% 0px 60% 0px' });
+    sek.forEach(function (s) { io.observe(s); });
+  } catch (e) { /* bez tego tło działa jak dotąd */ }
+})();
